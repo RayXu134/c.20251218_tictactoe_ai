@@ -18,6 +18,15 @@ struct Tictactoe {
   enum TictactoeItem **board;
 };
 
+// ---------------------
+// Function declarations
+// ---------------------
+
+
+// -------------
+// Main function
+// -------------
+
 int main() {
   // ncurses Setup.
   initscr();
@@ -28,3 +37,7 @@ int main() {
   // Exit ncurses mode.
   endwin();
 }
+
+// ------------------------
+// Function implementations
+// ------------------------
