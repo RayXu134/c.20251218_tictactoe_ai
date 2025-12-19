@@ -15,6 +15,16 @@ enum TictactoeWinner {
   kNoWinner
 };
 
+// @brief Status code for functions.
+enum StatusCode {
+  kOk = 0,
+  kErrorNullPointer,
+  kErrorSizeIsInvalid,
+  kErrorMalloc,
+  kErrorPositionOutOfRange,
+  kErrorPositionIsNotEmpty
+};
+
 // @brief Store everything in the tictactoe game.
 // Initialize with init_tictactoe before using.
 struct Tictactoe {
@@ -26,16 +36,11 @@ struct Tictactoe {
 
 // @brief Init a Tictactoe struct.
 // @param size The size of the tictactoe game.
-// @return 0 when success. -1 when error.
-int init_tictactoe(struct Tictactoe *pGame, const int size);
+enum StatusCode init_tictactoe(struct Tictactoe *pGame, const int size);
 
 // @brief Attempt to place a player's piece at a given position.
 // If the given position is empty, this function place the piece
 // to the given position (x, y).
 // If item is kEmpty, this function won't do anything.
-// And returns 0.
-//
-// @return 0 when success.
-// -1 when error.
-// 1 when the given position isn't empty.
-int make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item);
+// And returns Ok.
+enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item);
