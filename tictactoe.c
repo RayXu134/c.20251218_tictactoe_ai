@@ -12,6 +12,10 @@ int init_tictactoe(struct Tictactoe *pGame, const int size) {
     return -1;
   }
 
+  if (size <= 0) {
+    // Size can't be negative.
+    return -1;
+  }
   pGame->size = size;
 
   pGame->board = malloc(sizeof(struct Tictactoe *) * size);
