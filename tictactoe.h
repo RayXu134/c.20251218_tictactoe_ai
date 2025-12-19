@@ -8,6 +8,13 @@ enum TictactoeItem {
   kEmpty
 };
 
+// @brief Who wins in the tictactoe game.
+enum TictactoeWinner {
+  kO = 0,
+  kX,
+  kNoWinner
+};
+
 // @brief Store everything in the tictactoe game.
 // Initialize with init_tictactoe before using.
 struct Tictactoe {
