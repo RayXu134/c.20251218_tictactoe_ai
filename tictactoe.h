@@ -9,6 +9,7 @@ enum TictactoeItem {
 };
 
 // @brief Store everything in the tictactoe game.
+// Initialize with init_tictactoe before using.
 struct Tictactoe {
   // Board size.
   int size;
