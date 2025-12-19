@@ -21,3 +21,14 @@ struct Tictactoe {
 // @param size The size of the tictactoe game.
 // @return 0 when success. -1 when error.
 int init_tictactoe(struct Tictactoe *pGame, const int size);
+
+// @brief Attempt to place a player's piece at a given position.
+// If the given position is empty, this function place the piece
+// to the given position (x, y).
+// If item is kEmpty, this function won't do anything.
+// And returns 0.
+//
+// @return 0 when success.
+// -1 when error.
+// 1 when the given position isn't empty.
+int make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item);

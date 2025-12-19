@@ -36,3 +36,25 @@ int init_tictactoe(struct Tictactoe *pGame, const int size) {
 
   return 0;
 }
+
+int make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item) {
+  if (pGame == NULL) {
+    // Game pointer is NULL.
+    return -1;
+  }
+  if (x < 0 || x >= pGame->size || y < 0 || y >= pGame->size) {
+    // Position out of range.
+    return -1;
+  }
+  if (item == kEmpty) {
+    // Item is empty, returns 0.
+    return 0;
+  }
+  if (pGame->board[x][y] != kEmpty) {
+    // The given position isn't empty.
+    return -1;
+  }
+  pGame->board[x][y] = item;
+
+  return 0;
+}
