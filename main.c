@@ -90,7 +90,7 @@ int main() {
 
     refresh();
 
-    key = getchar();
+    key = getch();
     switch (key) {
       case 'q':  // [fallthrough]
       case 'Q':
