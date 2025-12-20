@@ -29,7 +29,7 @@ int main() {
   start_color();
   use_default_colors();  // Use default colors of the terminal.
   init_pair(kDefaultPair, COLOR_WHITE, -1);
-  init_pair(kSelectedPair, COLOR_YELLOW, -1);
+  init_pair(kSelectedPair, COLOR_RED, -1);
 
   mvprintw(0, 0, "Initializing the game...\n");
   refresh();
@@ -63,9 +63,17 @@ int main() {
     // Temporary stores a item in the board.
     int item;
     char item_in_char = '\0';
+    bool is_selected = false;  // This item ([i][j]) is selected.
     // Shows the game board.
     for (int i = 0; i < tictactoe.size; i++) {
       for (int j = 0; j < tictactoe.size; j++) {
+        // Check selected.
+        if (i == cursor_y && j == cursor_x) {
+          is_selected = true;
+        } else {
+          is_selected = false;
+        }
+
         item = tictactoe.board[i][j];
         if (item == kItemO) {
           item_in_char = 'O';
@@ -73,15 +81,19 @@ int main() {
           item_in_char = 'X';
         } else {
           // Empty.
-          item_in_char = '-';
+          if (is_selected) {
+            item_in_char = '+';
+          } else {
+            item_in_char = '-';
+          }
         }
 
-        if (i == cursor_y && j == cursor_x) {
+        if (is_selected) {
           // If this item is selected, use a special color pair.
           attron(COLOR_PAIR(kSelectedPair));
         }
         mvprintw(i*4+3, j*8+4, "%c", item_in_char);
-        if (i == cursor_y && j == cursor_x) {
+        if (is_selected) {
           // Turn off the color pair if needed.
           attroff(COLOR_PAIR(kSelectedPair));
         }
@@ -92,6 +104,7 @@ int main() {
 
     key = getch();
     switch (key) {
+      // Exit.
       case 'q':  // [fallthrough]
       case 'Q':
         // User wants to exit, ask again.
@@ -102,6 +115,36 @@ int main() {
           // Exit while loop.
           is_running = false;
         }
+        break;
+      // Up.
+      case KEY_UP:  // [fallthrough]
+      case 'w':
+        if (cursor_y > 0) {
+          cursor_y--;
+        }
+        break;
+      // Down.
+      case KEY_DOWN:  // [fallthrough]
+      case 's':
+        if (cursor_y < tictactoe.size - 1) {
+          cursor_y++;
+        }
+        break;
+      // Right.
+      case KEY_RIGHT:  // [fallthrough]
+      case 'd':
+        if (cursor_x < tictactoe.size - 1) {
+          cursor_x++;
+        }
+        break;
+      // Left.
+      case KEY_LEFT:  // [fallthrough]
+      case 'a':
+        if (cursor_x > 0) {
+          cursor_x--;
+        }
+        break;
+      default:
         break;
     }
   }
