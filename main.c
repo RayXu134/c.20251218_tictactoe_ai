@@ -16,6 +16,21 @@ int main() {
   noecho();
   keypad(stdscr, TRUE);
 
+  if (has_colors() == false) {
+    endwin();
+    printf("Your terminal does not support color.");
+    return -1;
+  }
+
+  enum TictactoeColorPair {
+    kDefaultPair=1,
+    kSelectedPair
+  };
+  start_color();
+  use_default_colors();  // Use default colors of the terminal.
+  init_pair(kDefaultPair, COLOR_WHITE, -1);
+  init_pair(kSelectedPair, COLOR_YELLOW, -1);
+
   mvprintw(0, 0, "Initializing the game...\n");
   refresh();
 
@@ -37,6 +52,9 @@ int main() {
 
   enum TictactoeWinner winner = kWinnerNone;
   int key;  // Stores the result of getchar().
+  // Position of cursor.
+  int cursor_x = 0;
+  int cursor_y = 0;
   // Main game loop.
   bool is_running = true;
   while (winner == kWinnerNone && is_running) {
@@ -57,7 +75,16 @@ int main() {
           // Empty.
           item_in_char = '-';
         }
-        mvprintw(i+1, j*3, "%c", item_in_char);
+
+        if (i == cursor_y && j == cursor_x) {
+          // If this item is selected, use a special color pair.
+          attron(COLOR_PAIR(kSelectedPair));
+        }
+        mvprintw(i*4+3, j*8+4, "%c", item_in_char);
+        if (i == cursor_y && j == cursor_x) {
+          // Turn off the color pair if needed.
+          attroff(COLOR_PAIR(kSelectedPair));
+        }
       }
     }
 
