@@ -5,6 +5,15 @@
 
 #include "tictactoe.h"
 
+enum TictactoeColorPair {
+  kDefaultPair=1,
+  kSelectedPair
+};
+
+// @brief Show game board.
+// It will show the selected item in a special color.
+void show_game_board(const struct Tictactoe *pGame, const int cursor_x, const int cursor_y);
+
 // -------------
 // Main function
 // -------------
@@ -22,10 +31,6 @@ int main() {
     return -1;
   }
 
-  enum TictactoeColorPair {
-    kDefaultPair=1,
-    kSelectedPair
-  };
   start_color();
   use_default_colors();  // Use default colors of the terminal.
   init_pair(kDefaultPair, COLOR_WHITE, -1);
@@ -62,47 +67,7 @@ int main() {
   bool is_running = true;
   while (winner == kWinnerNone && is_running) {
     clear();
-
-    // Temporary stores a item in the board.
-    int item;
-    char item_in_char = '\0';
-    bool is_selected = false;  // This item ([i][j]) is selected.
-    // Shows the game board.
-    for (int i = 0; i < tictactoe.size; i++) {
-      for (int j = 0; j < tictactoe.size; j++) {
-        // Check selected.
-        if (i == cursor_y && j == cursor_x) {
-          is_selected = true;
-        } else {
-          is_selected = false;
-        }
-
-        item = tictactoe.board[i][j];
-        if (item == kItemO) {
-          item_in_char = 'O';
-        } else if (item == kItemX) {
-          item_in_char = 'X';
-        } else {
-          // Empty.
-          if (is_selected) {
-            item_in_char = '+';
-          } else {
-            item_in_char = '-';
-          }
-        }
-
-        if (is_selected) {
-          // If this item is selected, use a special color pair.
-          attron(COLOR_PAIR(kSelectedPair));
-        }
-        mvprintw(i*4+3, j*8+4, "%c", item_in_char);
-        if (is_selected) {
-          // Turn off the color pair if needed.
-          attroff(COLOR_PAIR(kSelectedPair));
-        }
-      }
-    }
-
+    show_game_board(&tictactoe, cursor_x, cursor_y);
     refresh();
 
     key = getch();
@@ -199,4 +164,48 @@ int main() {
   // Exit ncurses mode.
   endwin();
   return 0;
+}
+
+// @brief Show game board.
+// It will show the selected item in a special color.
+void show_game_board(const struct Tictactoe *pGame, const int cursor_x, const int cursor_y)  {
+  // Temporary stores a item in the board.
+  int item;
+  char item_in_char = '\0';
+  bool is_selected = false;  // This item ([i][j]) is selected.
+  // Shows the game board.
+  for (int i = 0; i < pGame->size; i++) {
+    for (int j = 0; j < pGame->size; j++) {
+      // Check selected.
+      if (i == cursor_y && j == cursor_x) {
+        is_selected = true;
+      } else {
+        is_selected = false;
+      }
+
+      item = pGame->board[i][j];
+      if (item == kItemO) {
+        item_in_char = 'O';
+      } else if (item == kItemX) {
+        item_in_char = 'X';
+      } else {
+        // Empty.
+        if (is_selected) {
+          item_in_char = '+';
+        } else {
+          item_in_char = '-';
+        }
+      }
+
+      if (is_selected) {
+        // If this item is selected, use a special color pair.
+        attron(COLOR_PAIR(kSelectedPair));
+      }
+      mvprintw(i*4+3, j*8+4, "%c", item_in_char);
+      if (is_selected) {
+        // Turn off the color pair if needed.
+        attroff(COLOR_PAIR(kSelectedPair));
+      }
+    }
+  }
 }
