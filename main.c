@@ -55,6 +55,9 @@ int main() {
   // Position of cursor.
   int cursor_x = 0;
   int cursor_y = 0;
+  // Whose turn.
+  // O moves first.
+  int turn = kWinnerO;
   // Main game loop.
   bool is_running = true;
   while (winner == kWinnerNone && is_running) {
@@ -144,9 +147,53 @@ int main() {
           cursor_x--;
         }
         break;
+      // Make move.
+      case KEY_ENTER:  // [fallthrough]
+      case ' ':
+        if (tictactoe.board[cursor_y][cursor_x] == kItemEmpty) {
+          status = make_move(&tictactoe, cursor_x, cursor_y, turn);
+          if (status != kOk) {
+            // break, make_move error.
+            mvprintw(0, 0, "make_move error");
+            break;
+          }
+          // Take turn.
+          if (turn == kWinnerO) {
+            turn = kWinnerX;
+          } else if (turn == kWinnerX) {
+            turn = kWinnerO;
+          }
+        }
+        // Check winner.
+        status = check_winner(&tictactoe, &winner);
+        if (status != kOk) {
+          // break, check_winner error.
+          mvprintw(0, 0, "check_winner error");
+          break;
+        }
+        if (winner != kWinnerNone) {
+          // We have a winner, exit loop.
+          is_running = false;
+          break;
+        }
+        // No winner.
+        break;
       default:
         break;
     }
+  }
+
+  if (winner != kWinnerNone) {
+    // There is a winner, show it.
+    char winner_in_char = '\0';
+    if (winner == kWinnerO) {
+      winner_in_char = 'O';
+    } else if (winner == kWinnerX) {
+      winner_in_char = 'X';
+    }
+    mvprintw(0, 0, "The winner is %c! Press any key to exit", winner_in_char);
+    refresh();
+    getch();  // Wait for a key, and then exit.
   }
 
   // Exit ncurses mode.
