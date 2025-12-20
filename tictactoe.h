@@ -36,6 +36,10 @@ struct Tictactoe {
   int size;
   // A 2d array stores items in the game.
   enum TictactoeItem **board;
+  int *row_sum;     // Row counter array.
+  int *col_sum;     // Column counter array.
+  int diag_sum[2];  // [0] for top-left to bottom-right.
+                    // [1] for top-right to bottom-left.
 };
 
 // @brief Init a Tictactoe struct.
@@ -48,5 +52,9 @@ enum StatusCode init_tictactoe(struct Tictactoe *pGame, const int size);
 // If item is kEmpty, this function won't do anything.
 // And returns Ok.
 enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item);
+
+// @brief Check winner.
+// The result will store in *winner.
+enum StatusCode check_winner(struct Tictactoe *pGame, enum TictactoeWinner *winner);
 
 #endif  // TICTACTOE_TICTACTOE_H_
