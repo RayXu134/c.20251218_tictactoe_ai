@@ -1,6 +1,9 @@
 // tictactoe/tictactoe.h
 // Copyright (c) 2025 Ray. All Rights Reserved.
 
+#ifndef TICTACTOE_TICTACTOE_H_
+#define TICTACTOE_TICTACTOE_H_
+
 // @brief This has items in the tictactoe game board.
 enum TictactoeItem {
   kO=0,
@@ -44,3 +47,5 @@ enum StatusCode init_tictactoe(struct Tictactoe *pGame, const int size);
 // If item is kEmpty, this function won't do anything.
 // And returns Ok.
 enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enum TictactoeItem item);
+
+#endif  // TICTACTOE_TICTACTOE_H_
