@@ -150,13 +150,7 @@ int main() {
 
   if (winner != kWinnerNone) {
     // There is a winner, show it.
-    char winner_in_char = '\0';
-    if (winner == kWinnerO) {
-      winner_in_char = 'O';
-    } else if (winner == kWinnerX) {
-      winner_in_char = 'X';
-    }
-    mvprintw(0, 0, "The winner is %c! Press any key to exit", winner_in_char);
+    mvprintw(0, 0, "The winner is %c! Press any key to exit", winner_to_char(winner));
     refresh();
     getch();  // Wait for a key, and then exit.
   }

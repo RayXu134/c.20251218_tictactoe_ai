@@ -129,3 +129,17 @@ enum StatusCode check_winner(struct Tictactoe *pGame, enum TictactoeWinner *winn
   }
   return kOk;
 }
+
+// @brief Convert enum TictactoeWinner to a char.
+char winner_to_char(const enum TictactoeWinner winner) {
+  switch (winner) {
+    case kWinnerNone:
+      return '-';
+    case kWinnerO:
+      return 'O';
+    case kWinnerX:
+      return 'X';
+    default:
+      return '\0';
+  }
+}

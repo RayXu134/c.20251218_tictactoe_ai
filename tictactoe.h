@@ -57,4 +57,7 @@ enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enu
 // The result will store in *winner.
 enum StatusCode check_winner(struct Tictactoe *pGame, enum TictactoeWinner *winner);
 
+// @brief Convert enum TictactoeWinner to a char.
+char winner_to_char(const enum TictactoeWinner winner);
+
 #endif  // TICTACTOE_TICTACTOE_H_
