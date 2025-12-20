@@ -65,7 +65,7 @@ int main() {
   int turn = kWinnerO;
   // Main game loop.
   bool is_running = true;
-  while (winner == kWinnerNone && is_running) {
+  while (is_running) {
     clear();
     show_game_board(&tictactoe, cursor_x, cursor_y);
     refresh();
