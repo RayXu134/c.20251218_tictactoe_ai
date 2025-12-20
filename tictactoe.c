@@ -30,7 +30,7 @@ enum StatusCode init_tictactoe(struct Tictactoe *pGame, const int size) {
       return kErrorMalloc;
     }
     for (int j = 0; j < size; j++) {
-      pGame->board[i][j] = kEmpty;
+      pGame->board[i][j] = kItemEmpty;
     }
   }
 
@@ -46,11 +46,11 @@ enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enu
     // Position out of range.
     return kErrorPositionOutOfRange;
   }
-  if (item == kEmpty) {
+  if (item == kItemEmpty) {
     // Item is empty, returns 0.
     return kOk;
   }
-  if (pGame->board[x][y] != kEmpty) {
+  if (pGame->board[x][y] != kItemEmpty) {
     // The given position isn't empty.
     return kErrorPositionIsNotEmpty;
   }

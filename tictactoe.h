@@ -6,16 +6,17 @@
 
 // @brief This has items in the tictactoe game board.
 enum TictactoeItem {
-  kO=0,
-  kX,
-  kEmpty
+  // For summation.
+  kItemEmpty = 0,
+  kItemO = 1,
+  kItemX = -1
 };
 
 // @brief Who wins in the tictactoe game.
 enum TictactoeWinner {
-  kO = 0,
-  kX,
-  kNoWinner
+  kWinnerNone = 0,
+  kWinnerO = 1,
+  kWinnerX = -1
 };
 
 // @brief Status code for functions.
