@@ -58,11 +58,11 @@ enum StatusCode make_move(struct Tictactoe *pGame, const int x, const int y, enu
     // Item is empty, returns 0.
     return kOk;
   }
-  if (pGame->board[x][y] != kItemEmpty) {
+  if (pGame->board[y][x] != kItemEmpty) {
     // The given position isn't empty.
     return kErrorPositionIsNotEmpty;
   }
-  pGame->board[x][y] = item;
+  pGame->board[y][x] = item;
 
   return kOk;
 }
