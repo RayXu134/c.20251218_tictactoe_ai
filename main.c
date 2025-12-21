@@ -113,7 +113,7 @@ int main() {
         }
         break;
       // Make move.
-      case KEY_ENTER:  // [fallthrough]
+      case '\n':  // [fallthrough]
       case ' ':
         if (tictactoe.board[cursor_y][cursor_x] == kItemEmpty) {
           status = make_move(&tictactoe, cursor_x, cursor_y, turn);
