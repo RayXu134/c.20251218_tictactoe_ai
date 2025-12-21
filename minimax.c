@@ -84,3 +84,36 @@ int minimax(struct Tictactoe *pGame, bool is_maximizing) {
     return worst_score;
   }
 }
+
+// @brief Find the best move for the AI.
+// The AI is 'X' and the player is 'O'.
+// The result will be stored in *x and *y.
+enum StatusCode find_best_move(struct Tictactoe *pGame, int *x, int *y) {
+  if (pGame == NULL) {
+    return kErrorNullPointer;
+  }
+  int score;
+  int best_score = -1000;
+  int best_x;
+  int best_y;
+  for (int i = 0; i < pGame->size; i++) {
+    for (int j = 0; j < pGame->size; j++) {
+      if (pGame->board[i][j] != kItemEmpty) {
+        // This cell is already occupied.
+        continue;
+      }
+      enum TictactoeItem temp_item = pGame->board[i][j];
+      pGame->board[i][j] = kItemX;  // AI is 'X'.
+      score = minimax(pGame, false);
+      pGame->board[i][j] = temp_item;
+      if (score > best_score) {
+        best_score = score;
+        best_x = j;
+        best_y = i;
+      }
+    }
+  }
+  *x = best_x;
+  *y = best_y;
+  return kOk;
+}
