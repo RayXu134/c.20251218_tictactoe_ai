@@ -149,8 +149,12 @@ int main() {
   }
 
   if (winner != kWinnerNone) {
-    // There is a winner, show it.
-    mvprintw(0, 0, "The winner is %c! Press any key to exit", winner_to_char(winner));
+    if (winner == kWinnerTie) {
+      mvprintw(0, 0, "It's a tie! Press any key to exit");
+    } else {
+      // There is a winner, show it.
+      mvprintw(0, 0, "The winner is %c! Press any key to exit", winner_to_char(winner));
+    }
     refresh();
     getch();  // Wait for a key, and then exit.
   }

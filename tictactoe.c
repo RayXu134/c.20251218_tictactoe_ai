@@ -127,6 +127,17 @@ enum StatusCode check_winner(struct Tictactoe *pGame, enum TictactoeWinner *winn
       break;
     }
   }
+  // Check if the board is full but no one wins.
+  for (int i = 0; i < pGame->size; i++) {
+    for (int j = 0; j < pGame->size; j++) {
+      if (pGame->board[i][j] == kItemEmpty) {
+        // There is still a cell.
+        return kOk;
+      }
+    }
+  }
+  // The board is full, but no one wins.
+  *winner = kWinnerTie;
   return kOk;
 }
 

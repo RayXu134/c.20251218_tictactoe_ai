@@ -16,7 +16,8 @@ enum TictactoeItem {
 enum TictactoeWinner {
   kWinnerNone = 0,
   kWinnerO = 1,
-  kWinnerX = -1
+  kWinnerX = -1,
+  kWinnerTie = 2,
 };
 
 // @brief Status code for functions.
