@@ -3,7 +3,7 @@
 
 GCC = gcc
 GCC_FLAGS = -lncurses
-SOURCE = main.c tictactoe.c
+SOURCE = main.c tictactoe.c minimax.c
 TARGET = main
 
 $(TARGET): $(SOURCE)
