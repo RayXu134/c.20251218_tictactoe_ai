@@ -146,18 +146,6 @@ int main() {
       }
       // Take turn.
       turn = kItemO;
-      // Check winner.
-      status = check_winner(&tictactoe, &winner);
-      if (status != kOk) {
-        // break, check_winner error.
-        mvprintw(0, 0, "check_winner error");
-        break;
-      }
-      if (winner != kWinnerNone) {
-        // We have a winner, exit loop.
-        is_running = false;
-        break;
-      }
     } else {
       // Get and handle key pressing.
       key = getch();
@@ -219,23 +207,21 @@ int main() {
               turn = kWinnerO;
             }
           }
-          // Check winner.
-          status = check_winner(&tictactoe, &winner);
-          if (status != kOk) {
-            // break, check_winner error.
-            mvprintw(0, 0, "check_winner error");
-            break;
-          }
-          if (winner != kWinnerNone) {
-            // We have a winner, exit loop.
-            is_running = false;
-            break;
-          }
-          // No winner.
-          break;
         default:
           break;
       }
+    }
+    // Check winner.
+    status = check_winner(&tictactoe, &winner);
+    if (status != kOk) {
+      // break, check_winner error.
+      mvprintw(0, 0, "check_winner error");
+      break;
+    }
+    if (winner != kWinnerNone) {
+      // We have a winner, exit loop.
+      is_running = false;
+      break;
     }
   }
   if (winner != kWinnerNone) {
