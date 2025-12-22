@@ -92,6 +92,10 @@ enum StatusCode find_best_move(struct Tictactoe *pGame, int *x, int *y) {
   if (pGame == NULL) {
     return kErrorNullPointer;
   }
+  if (!is_moves_left(pGame)) {
+    // No moves left, we don't need to find a best move.
+    return kErrorNoMovesLeft;
+  }
   int score;
   int best_score = -1000;
   int best_x;

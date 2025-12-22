@@ -27,7 +27,8 @@ enum StatusCode {
   kErrorSizeIsInvalid,
   kErrorMalloc,
   kErrorPositionOutOfRange,
-  kErrorPositionIsNotEmpty
+  kErrorPositionIsNotEmpty,
+  kErrorNoMovesLeft
 };
 
 // @brief Store everything in the tictactoe game.
