@@ -149,6 +149,8 @@ int main() {
   }
 
   if (winner != kWinnerNone) {
+    clear();
+    show_game_board(&tictactoe, cursor_x, cursor_y);
     if (winner == kWinnerTie) {
       mvprintw(0, 0, "It's a tie! Press any key to exit");
     } else {
