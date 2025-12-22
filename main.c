@@ -2,17 +2,27 @@
 // Copyright (c) 2025 Ray. All Rights Reserved.
 
 #include <ncurses.h>
+#include <time.h>
 
 #include "tictactoe.h"
+#include "minimax.h"
 
 enum TictactoeColorPair {
   kDefaultPair=1,
   kSelectedPair
 };
 
+enum TictactoeGameMode {
+  kPvpMode=1,
+  kPveMode
+};
+
 // @brief Show game board.
 // It will show the selected item in a special color.
 void show_game_board(const struct Tictactoe *pGame, const int cursor_x, const int cursor_y);
+
+// @brief Convert a enum TictactoeGameMode to a string.
+char *mode_to_string(const enum TictactoeGameMode mode);
 
 // -------------
 // Main function
@@ -55,6 +65,53 @@ int main() {
     return -1;
   }
 
+  // Ask for game mode.
+  int mode = kPvpMode;  // Default mode is Pvp mode.
+  {
+    int key;
+    bool selecting = true;
+    while (selecting) {
+      clear();
+      mvprintw(0, 0, "Choose a mode");
+      mvprintw(1, 0, "(use the up, down arrow keys, space to select, q to quit)");
+      // Print mode options (with highlight).
+      for (int i = 1; i <= 2; i++) {
+        if (i == mode) {
+          attron(COLOR_PAIR(kSelectedPair));
+        }
+        mvprintw(i+1, 2, "- %s", mode_to_string(i));
+        if (i == mode) {
+          attroff(COLOR_PAIR(kSelectedPair));
+        }
+      }
+      refresh();
+      key = getch();
+      switch (key) {
+        case 'q':  // [fallthrough]
+        case 'Q':
+          endwin();
+          return 0;
+          break;
+        case KEY_UP:
+          if (mode > 1) {
+            mode--;
+          }
+          break;
+        case KEY_DOWN:
+          if (mode < 2) {
+            mode++;
+          }
+          break;
+        case '\n':  // [fallthrough]
+        case ' ':
+          selecting = false;  // Finish selecting.
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   enum TictactoeWinner winner = kWinnerNone;
   int key;  // Stores the result of getchar().
   // Position of cursor.
@@ -70,84 +127,117 @@ int main() {
     show_game_board(&tictactoe, cursor_x, cursor_y);
     refresh();
 
-    key = getch();
-    switch (key) {
-      // Exit.
-      case 'q':  // [fallthrough]
-      case 'Q':
-        // User wants to exit, ask again.
-        mvprintw(0, 0, "Really exit? (y/n)");
-        refresh();
-        int key_want_exit = getchar();
-        if (key_want_exit == 'y') {
-          // Exit while loop.
-          is_running = false;
-        }
+    if (mode == kPveMode && turn == kWinnerX) {
+      int x;
+      int y;
+      status = find_best_move(&tictactoe, &x, &y);
+      if (status != kOk) {
+        endwin();
+        printf("find_best_move() error, code: %d\n", status);
+        return -1;
+      }
+      cursor_x = x;
+      cursor_y = y;
+      status = make_move(&tictactoe, x, y, kItemX);  // The AI is 'X'.
+      if (status != kOk) {
+        endwin();
+        printf("make_move() error, code: %d, x=%d, y=%d\n", status, x, y);
+        return -1;
+      }
+      // Take turn.
+      turn = kItemO;
+      // Check winner.
+      status = check_winner(&tictactoe, &winner);
+      if (status != kOk) {
+        // break, check_winner error.
+        mvprintw(0, 0, "check_winner error");
         break;
-      // Up.
-      case KEY_UP:  // [fallthrough]
-      case 'w':
-        if (cursor_y > 0) {
-          cursor_y--;
-        }
+      }
+      if (winner != kWinnerNone) {
+        // We have a winner, exit loop.
+        is_running = false;
         break;
-      // Down.
-      case KEY_DOWN:  // [fallthrough]
-      case 's':
-        if (cursor_y < tictactoe.size - 1) {
-          cursor_y++;
-        }
-        break;
-      // Right.
-      case KEY_RIGHT:  // [fallthrough]
-      case 'd':
-        if (cursor_x < tictactoe.size - 1) {
-          cursor_x++;
-        }
-        break;
-      // Left.
-      case KEY_LEFT:  // [fallthrough]
-      case 'a':
-        if (cursor_x > 0) {
-          cursor_x--;
-        }
-        break;
-      // Make move.
-      case '\n':  // [fallthrough]
-      case ' ':
-        if (tictactoe.board[cursor_y][cursor_x] == kItemEmpty) {
-          status = make_move(&tictactoe, cursor_x, cursor_y, turn);
+      }
+    } else {
+      // Get and handle key pressing.
+      key = getch();
+      switch (key) {
+        // Exit.
+        case 'q':  // [fallthrough]
+        case 'Q':
+          // User wants to exit, ask again.
+          mvprintw(0, 0, "Really exit? (y/n)");
+          refresh();
+          int key_want_exit = getchar();
+          if (key_want_exit == 'y') {
+            // Exit while loop.
+            is_running = false;
+          }
+          break;
+        // Up.
+        case KEY_UP:  // [fallthrough]
+        case 'w':
+          if (cursor_y > 0) {
+            cursor_y--;
+          }
+          break;
+        // Down.
+        case KEY_DOWN:  // [fallthrough]
+        case 's':
+          if (cursor_y < tictactoe.size - 1) {
+            cursor_y++;
+          }
+          break;
+        // Right.
+        case KEY_RIGHT:  // [fallthrough]
+        case 'd':
+          if (cursor_x < tictactoe.size - 1) {
+            cursor_x++;
+          }
+          break;
+        // Left.
+        case KEY_LEFT:  // [fallthrough]
+        case 'a':
+          if (cursor_x > 0) {
+            cursor_x--;
+          }
+          break;
+        // Make move.
+        case '\n':  // [fallthrough]
+        case ' ':
+          if (tictactoe.board[cursor_y][cursor_x] == kItemEmpty) {
+            status = make_move(&tictactoe, cursor_x, cursor_y, turn);
+            if (status != kOk) {
+              // break, make_move error.
+              mvprintw(0, 0, "make_move error");
+              break;
+            }
+            // Take turn.
+            if (turn == kWinnerO) {
+              turn = kWinnerX;
+            } else if (turn == kWinnerX) {
+              turn = kWinnerO;
+            }
+          }
+          // Check winner.
+          status = check_winner(&tictactoe, &winner);
           if (status != kOk) {
-            // break, make_move error.
-            mvprintw(0, 0, "make_move error");
+            // break, check_winner error.
+            mvprintw(0, 0, "check_winner error");
             break;
           }
-          // Take turn.
-          if (turn == kWinnerO) {
-            turn = kWinnerX;
-          } else if (turn == kWinnerX) {
-            turn = kWinnerO;
+          if (winner != kWinnerNone) {
+            // We have a winner, exit loop.
+            is_running = false;
+            break;
           }
-        }
-        // Check winner.
-        status = check_winner(&tictactoe, &winner);
-        if (status != kOk) {
-          // break, check_winner error.
-          mvprintw(0, 0, "check_winner error");
+          // No winner.
           break;
-        }
-        if (winner != kWinnerNone) {
-          // We have a winner, exit loop.
-          is_running = false;
+        default:
           break;
-        }
-        // No winner.
-        break;
-      default:
-        break;
+      }
     }
   }
-
   if (winner != kWinnerNone) {
     clear();
     show_game_board(&tictactoe, cursor_x, cursor_y);
@@ -208,4 +298,13 @@ void show_game_board(const struct Tictactoe *pGame, const int cursor_x, const in
       }
     }
   }
+}
+
+char *mode_to_string(const enum TictactoeGameMode mode) {
+  if (mode == kPvpMode) {
+    return "PvP Mode";
+  } else if (mode == kPveMode) {
+    return "PvE Mode";
+  }
+  return "Undefined Mode";
 }
